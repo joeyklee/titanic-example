@@ -4,7 +4,8 @@ let $ageInput,
   $fareInputText,
   $sexInput,
   $predictBtn,
-  $predictionText;
+  $predictionText,
+  $status;
 let sample = [0, 0, 0];
 
 
@@ -25,13 +26,15 @@ const neuralNetOptions = {
 document.addEventListener('DOMContentLoaded', async function () {
 
   nn = new NeuralNet(neuralNetOptions)
+  initButtons();
+
   await nn.createModel();
   data = await nn.loadData(TRAIN_DATA_PATH, 'csv');
 
   normalizedData = await nn.parseData(data)
   await nn.train(normalizedData.inputs, normalizedData.labels);
-
-  initButtons();
+  $status.textContent = "model trained!"
+  
 })
 
 function initButtons(){
@@ -43,10 +46,13 @@ function initButtons(){
   $sexInput = document.querySelector('#sexInput');
   $predictBtn = document.querySelector('#predictBtn');
   $predictionText = document.querySelector('#predictionText');
+  $status = document.querySelector('#status');
 
   sample[0] = Number($ageInput.value)
   sample[1] = Number($fareInput.value)
   sample[2] = Number($sexInput.value)
+
+  $status.textContent = "loading data & training..."
 
   $ageInput.addEventListener('change', function (e) {
     $ageInputText.textContent = e.target.value
